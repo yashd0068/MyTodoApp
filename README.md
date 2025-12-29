@@ -129,13 +129,6 @@ npm install
 npm run dev
 ```
 
----
-
-## 📸 Screenshots
-
-> *(Add screenshots here for better presentation)*
-
----
 
 ## 🔒 Security Practices
 
@@ -154,9 +147,9 @@ Contributions are welcome! Feel free to fork this repository and submit a pull r
 ## 👨‍💻 Author
 
 **Yash**
-📧 Email: [your-email@example.com](mailto:your-email@example.com)
-🔗 GitHub: [https://github.com/yourusername](https://github.com/yourusername)
+
 
 ---
 
 ⭐ If you like this project, give it a star!
+
