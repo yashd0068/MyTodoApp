@@ -10,39 +10,38 @@ export default function EditTodo() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  /* ---------------- Fetch user ---------------- */
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/users/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) throw new Error("Failed to fetch user data");
         const data = await res.json();
-        setUser(data);
-      } catch (err) {
-        console.error(err);
+        if (res.ok) setUser(data);
+      } catch {
         toast.error("Failed to load profile");
       }
     };
     fetchUser();
   }, [token]);
 
-  const fetchTodo = async () => {
-    try {
-      const res = await fetch(`http://localhost:5000/api/todos/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setForm(data);
-      } else {
-        toast.error("Failed to fetch todo details.");
+  /* ---------------- Fetch todo ---------------- */
+  useEffect(() => {
+    const fetchTodo = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/todos/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok) setForm(data);
+        else toast.error("Todo not found");
+      } catch {
+        toast.error("Failed to fetch todo");
       }
-    } catch (err) {
-      console.error(err);
-      toast.error("Error fetching todo. Please try again.");
-    }
-  };
+    };
+    fetchTodo();
+  }, [id, token]);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -60,52 +59,46 @@ export default function EditTodo() {
       });
 
       if (res.ok) {
-        toast.success("Todo updated successfully! ");
-        setTimeout(() => navigate("/home"), 1000);
+        toast.success("Todo updated");
+        navigate("/home");
       } else {
-        toast.error("Failed to update todo. Please try again.");
+        toast.error("Failed to update todo");
       }
-    } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong while updating.");
+    } catch {
+      toast.error("Something went wrong");
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    toast.success("Logged out successfully ");
-    setTimeout(() => navigate("/login"), 800);
+    toast.success("Logged out");
+    navigate("/login");
   };
 
-  useEffect(() => {
-    fetchTodo();
-  }, []);
-
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100">
-      {/* Header */}
-      <nav className="bg-white/30 backdrop-blur-md shadow-md fixed top-0 left-0 w-full z-20">
+    <div className="min-h-screen flex flex-col bg-[#EDF1F7] text-slate-800">
+      {/* Navbar */}
+      <nav className="bg-[#E6ECF4] border-b border-[#D7DEEA] fixed top-0 left-0 w-full z-20">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
           <h1
-            className="text-2xl font-bold text-blue-700 tracking-wide cursor-pointer"
+            className="text-xl font-semibold text-indigo-600 cursor-pointer"
             onClick={() => navigate("/home")}
           >
-            Todo<span className="text-gray-700">App</span>
+            Todo<span className="text-slate-500">App</span>
           </h1>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
             <Link
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition"
-              to="/Home"
+              to="/home"
+              className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
             >
               Home
             </Link>
 
-            {/* Profile Avatar */}
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-lg hover:ring-2 hover:ring-blue-300 transition"
+                className="w-9 h-9 rounded-full overflow-hidden border border-slate-300 hover:ring-2 hover:ring-indigo-300 transition"
               >
                 <img
                   src={
@@ -113,34 +106,21 @@ export default function EditTodo() {
                       ? `http://localhost:5000${user.profilePic}`
                       : "https://via.placeholder.com/40"
                   }
-                  alt="Profile"
                   className="w-full h-full object-cover"
                 />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white/30 backdrop-blur-md border border-white/30 rounded-xl shadow-lg py-2 flex flex-col">
+                <div className="absolute right-0 mt-3 w-44 bg-[#F1F5FA] border border-[#D7DEEA] rounded-lg shadow-md py-1">
                   <button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      navigate("/profile");
-                    }}
-                    className="px-4 py-2 text-gray-700 hover:bg-blue-100/50 rounded-lg text-left transition"
+                    onClick={() => navigate("/profile")}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-[#E6ECF4]"
                   >
                     Profile
                   </button>
                   <button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      navigate("/password");
-                    }}
-                    className="px-4 py-2 text-gray-700 hover:bg-blue-100/50 rounded-lg text-left transition"
-                  >
-                    Password
-                  </button>
-                  <button
                     onClick={handleLogout}
-                    className="px-4 py-2 text-gray-700 hover:bg-red-100/50 rounded-lg text-left transition"
+                    className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-100"
                   >
                     Logout
                   </button>
@@ -151,14 +131,13 @@ export default function EditTodo() {
         </div>
       </nav>
 
-
       {/* Form */}
-      <main className="flex-1 flex justify-center items-center px-4 py-20">
+      <main className="flex-1 flex justify-center items-center px-4 pt-28 pb-20">
         <form
           onSubmit={handleSubmit}
-          className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition hover:scale-[1.01]"
+          className="w-full max-w-md bg-[#F1F5FA] border border-[#D7DEEA] rounded-xl p-6 shadow-lg"
         >
-          <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">
+          <h2 className="text-2xl font-semibold text-center mb-6 text-slate-800">
             Edit Todo
           </h2>
 
@@ -167,7 +146,7 @@ export default function EditTodo() {
             value={form.title}
             onChange={handleChange}
             placeholder="Title"
-            className="w-full border border-gray-300 p-3 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full mb-4 px-4 py-2 rounded-md bg-white border border-[#D7DEEA] focus:ring-2 focus:ring-indigo-400 outline-none"
             required
           />
 
@@ -176,7 +155,8 @@ export default function EditTodo() {
             value={form.description}
             onChange={handleChange}
             placeholder="Description"
-            className="w-full border border-gray-300 p-3 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows="3"
+            className="w-full mb-4 px-4 py-2 rounded-md bg-white border border-[#D7DEEA] focus:ring-2 focus:ring-indigo-400 outline-none"
           />
 
           <input
@@ -184,12 +164,12 @@ export default function EditTodo() {
             type="date"
             value={form.due_date?.split("T")[0] || ""}
             onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full mb-6 px-4 py-2 rounded-md bg-white border border-[#D7DEEA] focus:ring-2 focus:ring-indigo-400 outline-none"
           />
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-md font-medium transition"
           >
             Update Todo
           </button>

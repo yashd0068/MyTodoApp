@@ -3,12 +3,16 @@ import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
 export default function AddTodo() {
-  const [form, setForm] = useState({ title: "", description: "", due_date: "" });
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    due_date: "",
+  });
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState({ profilePic: "" });
+
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -16,11 +20,9 @@ export default function AddTodo() {
         const res = await fetch("http://localhost:5000/api/users/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) throw new Error("Failed to fetch user data");
         const data = await res.json();
         setUser(data);
-      } catch (err) {
-        console.error(err);
+      } catch {
         toast.error("Failed to load profile");
       }
     };
@@ -43,49 +45,46 @@ export default function AddTodo() {
       });
 
       if (res.ok) {
-        toast.success("Todo added successfully ");
+        toast.success("Todo added");
         navigate("/home");
       } else {
-        const errorData = await res.json();
-        toast.error(errorData.message || "Failed to add todo ");
+        toast.error("Failed to add todo");
       }
-    } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong. Please try again.");
+    } catch {
+      toast.error("Something went wrong");
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    toast("Logged out successfully ");
     navigate("/login");
+    toast("Logged out");
   };
-
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100">
+    <div className="min-h-screen bg-[#F4F7FB] text-[#2C2C2C]">
+
       {/* Navbar */}
-      <nav className="bg-white/30 backdrop-blur-md shadow-md fixed top-0 left-0 w-full z-20">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+      <nav className="fixed top-0 w-full z-20 bg-[#FDFEFF]/80 backdrop-blur border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <h1
-            className="text-2xl font-bold text-blue-700 tracking-wide cursor-pointer"
             onClick={() => navigate("/home")}
+            className="text-xl font-semibold cursor-pointer"
           >
-            Todo<span className="text-gray-700">App</span>
+            Todo<span className="text-indigo-600">App</span>
           </h1>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
             <Link
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition"
-              to="/Home"
+              to="/home"
+              className="text-sm px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition"
             >
               Home
             </Link>
 
-            {/* Profile Avatar */}
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-lg hover:ring-2 hover:ring-blue-300 transition"
+                className="w-10 h-10 rounded-full overflow-hidden border border-gray-300"
               >
                 <img
                   src={
@@ -93,26 +92,21 @@ export default function AddTodo() {
                       ? `http://localhost:5000${user.profilePic}`
                       : "https://via.placeholder.com/40"
                   }
-                  alt="Profile"
                   className="w-full h-full object-cover"
                 />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white/30 backdrop-blur-md border border-white/30 rounded-xl shadow-lg py-2 flex flex-col">
+                <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg">
                   <button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      navigate("/profile");
-                    }}
-                    className="px-4 py-2 text-gray-700 hover:bg-blue-100/50 rounded-lg text-left transition"
+                    onClick={() => navigate("/profile")}
+                    className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                   >
                     Profile
                   </button>
-
                   <button
                     onClick={handleLogout}
-                    className="px-4 py-2 text-gray-700 hover:bg-red-100/50 rounded-lg text-left transition"
+                    className="block w-full px-4 py-2 text-left text-red-500 hover:bg-red-50"
                   >
                     Logout
                   </button>
@@ -124,12 +118,12 @@ export default function AddTodo() {
       </nav>
 
       {/* Form */}
-      <main className="flex-1 flex justify-center items-center px-4 py-32">
+      <main className="flex items-center justify-center px-4 pt-32 pb-20">
         <form
           onSubmit={handleSubmit}
-          className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition hover:scale-[1.01]"
+          className="w-full max-w-md bg-[#FDFEFF] border border-gray-200 rounded-2xl p-8 shadow-xl"
         >
-          <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">
+          <h2 className="text-2xl font-semibold mb-6 text-center">
             Add New Todo
           </h2>
 
@@ -137,27 +131,28 @@ export default function AddTodo() {
             name="title"
             placeholder="Title"
             onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
+            className="w-full bg-[#F4F7FB] border border-gray-300 p-3 rounded-lg mb-4 focus:ring-2 focus:ring-indigo-500 outline-none"
           />
 
           <textarea
             name="description"
             placeholder="Description"
             onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows={4}
+            className="w-full bg-[#F4F7FB] border border-gray-300 p-3 rounded-lg mb-4 focus:ring-2 focus:ring-indigo-500 outline-none"
           />
 
           <input
-            name="due_date"
             type="date"
+            name="due_date"
             onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full bg-[#F4F7FB] border border-gray-300 p-3 rounded-lg mb-6 focus:ring-2 focus:ring-indigo-500 outline-none"
           />
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+            className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition"
           >
             Add Todo
           </button>
@@ -165,4 +160,5 @@ export default function AddTodo() {
       </main>
     </div>
   );
+
 }

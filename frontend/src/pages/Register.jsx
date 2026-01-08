@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import GoogleLoginButton from "./GoogleLoginButton";
-import 'remixicon/fonts/remixicon.css'
+import { motion } from "framer-motion";
+import "remixicon/fonts/remixicon.css";
 
 export default function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -29,7 +30,7 @@ export default function Register() {
       const data = await res.json();
 
       if (res.ok) {
-        toast.success(" Registration successful!");
+        toast.success("Registration successful!");
         navigate("/login");
       } else {
         toast.error(data.message || "Registration failed!");
@@ -62,101 +63,145 @@ export default function Register() {
       `&scope=email,public_profile`;
   };
 
-
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-100 via-pink-50 to-blue-200">
-      {/* Navbar */}
-      <header className="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-20">
-        <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
-          <h1 className="text-2xl font-bold text-blue-700 tracking-wide">
-            Todo<span className="text-gray-700">app</span>
-          </h1>
-          <div className="flex gap-4">
-            <button
-              onClick={() => navigate("/login")}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
-            >
-              Login
-            </button>
-          </div>
+    <div className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50 flex items-center justify-center px-6 py-12 overflow-hidden">
+
+      {/* Very subtle light grain texture for premium depth – no distracting patterns */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none bg-[url('https://assets.codepen.io/605876/noise.png')] mix-blend-multiply" />
+
+      <div className="relative w-full max-w-7xl mx-auto z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-32 items-center">
+
+          {/* LEFT: Clean Brand + Premium Dashboard Preview */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+            className="hidden sm:flex flex-col items-start order-2 lg:order-1"
+          >
+            <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-16 text-gray-900">
+              Todo<span className="text-indigo-600">Pro</span>
+            </h1>
+
+            <div className="w-full rounded-3xl border border-gray-200/60 bg-white/70 backdrop-blur-xl p-10 md:p-12 shadow-2xl">
+              <img
+                src="https://themewagon.com/wp-content/uploads/2022/03/Final-1.png"
+                alt="TodoPro premium dashboard"
+                className="w-full rounded-2xl shadow-inner"
+              />
+            </div>
+
+            <div className="mt-16 space-y-6 text-left">
+              <p className="text-2xl md:text-3xl font-semibold text-gray-900">
+                Focused work, without noise.
+              </p>
+              <p className="text-lg text-gray-600 max-w-lg leading-relaxed">
+                A modern task management platform trusted by high-performing teams worldwide.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* RIGHT: Minimalist Register Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="order-1 lg:order-2 w-full max-w-md mx-auto"
+          >
+            <div className="text-center lg:text-left mb-12">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
+                Get started free
+              </h2>
+              <p className="mt-4 text-lg text-gray-600">
+                No credit card required • Unlimited tasks
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-7">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Full name</label>
+                <input
+                  name="name"
+                  type="text"
+                  required
+                  value={form.name}
+                  onChange={handleChange}
+                  placeholder="John Doe"
+                  className="w-full rounded-xl border border-gray-300 bg-white/80 px-6 py-4.5 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-600/50 focus:border-indigo-600 transition shadow-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email address</label>
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="you@company.com"
+                  className="w-full rounded-xl border border-gray-300 bg-white/80 px-6 py-4.5 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-600/50 focus:border-indigo-600 transition shadow-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                <input
+                  name="password"
+                  type="password"
+                  required
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="Create a secure password"
+                  className="w-full rounded-xl border border-gray-300 bg-white/80 px-6 py-4.5 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-600/50 focus:border-indigo-600 transition shadow-sm"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full rounded-xl bg-indigo-600 py-4.5 text-xl font-semibold text-white shadow-lg hover:bg-indigo-700 hover:shadow-xl transition"
+              >
+                Create account
+              </button>
+            </form>
+
+            <div className="my-10 flex items-center">
+              <div className="flex-1 border-t border-gray-300" />
+              <span className="px-6 text-sm text-gray-500 bg-white/80">or continue with</span>
+              <div className="flex-1 border-t border-gray-300" />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <GoogleLoginButton />
+              <button
+                onClick={githubLogin}
+                className="flex items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white/80 py-4 text-base font-medium text-gray-700 hover:shadow-md transition"
+              >
+                <i className="ri-github-fill text-2xl" />
+                GitHub
+              </button>
+              <button
+                onClick={facebookLogin}
+                className="flex items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white/80 py-4 text-base font-medium text-gray-700 hover:shadow-md transition"
+              >
+                <i className="ri-facebook-circle-fill text-2xl" />
+                Facebook
+              </button>
+            </div>
+
+            <p className="mt-12 text-center text-base text-gray-600">
+              Already have an account?{" "}
+              <span
+                onClick={() => navigate("/login")}
+                className="font-semibold text-indigo-600 hover:text-indigo-700 cursor-pointer hover:underline transition"
+              >
+                Sign in
+              </span>
+            </p>
+          </motion.div>
+
         </div>
-      </header>
-
-      {/* Register Form */}
-      <main className="flex-1 flex items-center justify-center px-4 py-20">
-        <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl p-8 w-full max-w-md transform transition hover:scale-[1.01]">
-          <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">
-            Create Your Account
-          </h2>
-          <p className="text-gray-500 text-center mb-6">
-            Join us today and start your journey!
-          </p>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <input
-              name="name"
-              placeholder="Full Name"
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            <input
-              name="email"
-              type="email"
-              placeholder="Email Address"
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
-            >
-              Register
-            </button>
-          </form>
-
-          <div className=" flex  gap-2 mt-4" >
-            <button className=" mt-2 w-1/2 "> <GoogleLoginButton /> </button>
-
-            <button
-              onClick={githubLogin}
-              className="w-2/3 mt-2 flex items-center justify-center gap-2 
-             border border-gray-300  rounded-lg font-semibold text-m
-             hover:bg-gray-100 transition"
-            > <i class="ri-github-fill"></i> </button>
-            <button
-              onClick={facebookLogin}
-              className="w-2/3 mt-2 flex items-center justify-center gap-2 
-             border border-gray-300  rounded-lg font-semibold text-m
-             hover:bg-gray-100 transition"
-            >
-              Facebook
-            </button>
-
-          </div>
-
-
-          <p className="text-center text-gray-500 text-sm mt-6">
-            Already have an account?{" "}
-            <span
-              onClick={() => navigate("/login")}
-              className="text-blue-600 font-medium hover:underline cursor-pointer"
-            >
-              Login here
-            </span>
-          </p>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }

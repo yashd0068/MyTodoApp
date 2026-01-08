@@ -6,7 +6,7 @@ export default function GithubCallback() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const code = new URLSearchParams(window.location.search).get("code");
+        const code = new URLSearchParams(window.location.search).get("code"); 
 
         if (!code) {
             toast.error("GitHub login failed");

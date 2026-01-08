@@ -4,11 +4,11 @@ import toast from "react-hot-toast";
 
 export default function EditProfile() {
   const [form, setForm] = useState({ name: "", email: "" });
-  const navigate = useNavigate();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState({ profilePic: "" });
-  const token = localStorage.getItem("token");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -16,37 +16,20 @@ export default function EditProfile() {
         const res = await fetch("http://localhost:5000/api/users/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) throw new Error("Failed to fetch user data");
+        if (!res.ok) throw new Error();
         const data = await res.json();
         setForm({ name: data.name, email: data.email });
-      } catch (err) {
-        console.error(err);
-        toast.error("Session expired. Please log in again.");
-        setTimeout(() => navigate("/login"), 800);
+        setUser(data);
+      } catch {
+        toast.error("Session expired");
+        navigate("/login");
       }
     };
     fetchUser();
   }, [token, navigate]);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/users/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error("Failed to fetch user data");
-        const data = await res.json();
-        setUser(data);
-      } catch (err) {
-        console.error(err);
-        toast.error("Failed to load profile");
-      }
-    };
-    fetchUser();
-  }, [token]);
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,49 +43,43 @@ export default function EditProfile() {
         body: JSON.stringify(form),
       });
 
-      const data = await res.json();
-
       if (res.ok) {
-        toast.success("Profile updated successfully! ");
-        setTimeout(() => navigate("/profile"), 1000);
-      } else {
-        toast.error(data.message || "Failed to update profile.");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong while updating.");
+        toast.success("Changes saved");
+        navigate("/profile");
+      } else toast.error("Update failed");
+    } catch {
+      toast.error("Something went wrong");
     }
   };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
-    toast.success("Logged out successfully ");
-    setTimeout(() => navigate("/login"), 800);
+    toast.success("Logged out");
+    navigate("/login");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-200 via-pink-100 to-blue-100 flex justify-center items-center">
-      <nav className="bg-white/30 backdrop-blur-md shadow-md fixed top-0 left-0 w-full z-20">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+    <div className="min-h-screen bg-[#F4F6F8] text-gray-900">
+
+      {/* Top Navigation */}
+      <nav className="bg-[#EEF1F4] border-b border-gray-300/40 fixed w-full z-20">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <h1
-            className="text-2xl font-bold text-blue-700 tracking-wide cursor-pointer"
             onClick={() => navigate("/home")}
+            className="text-lg font-semibold cursor-pointer"
           >
-            Todo<span className="text-gray-700">App</span>
+            Todo<span className="text-gray-500">App</span>
           </h1>
 
-          <div className="flex items-center space-x-4">
-            <Link
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition"
-              to="/Home"
-            >
+          <div className="flex items-center gap-4">
+            <Link to="/home" className="text-sm text-gray-600 hover:text-gray-900">
               Home
             </Link>
 
-            {/* Profile Avatar */}
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-lg hover:ring-2 hover:ring-blue-300 transition"
+                className="w-8 h-8 rounded-full overflow-hidden border border-gray-300"
               >
                 <img
                   src={
@@ -110,26 +87,27 @@ export default function EditProfile() {
                       ? `http://localhost:5000${user.profilePic}`
                       : "https://via.placeholder.com/40"
                   }
-                  alt="Profile"
                   className="w-full h-full object-cover"
                 />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white/30 backdrop-blur-md border border-white/30 rounded-xl shadow-lg py-2 flex flex-col">
+                <div className="absolute right-0 mt-3 w-44 bg-white border border-gray-300/40 rounded-lg shadow-lg py-1">
                   <button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      navigate("/profile");
-                    }}
-                    className="px-4 py-2 text-gray-700 hover:bg-blue-100/50 rounded-lg text-left transition"
+                    onClick={() => navigate("/profile")}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                   >
                     Profile
                   </button>
-
+                  <button
+                    onClick={() => navigate("/password")}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                  >
+                    Security
+                  </button>
                   <button
                     onClick={handleLogout}
-                    className="px-4 py-2 text-gray-700 hover:bg-red-100/50 rounded-lg text-left transition"
+                    className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-100"
                   >
                     Logout
                   </button>
@@ -139,61 +117,114 @@ export default function EditProfile() {
           </div>
         </div>
       </nav>
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md p-10 bg-white/30 backdrop-blur-xl rounded-3xl shadow-2xl"
-      >
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Edit Profile
-        </h2>
 
-        {/* Name Input */}
-        <div className="relative mb-6">
-          <input
-            type="text"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            placeholder="Name"
-            className="peer w-full border-b-2 border-gray-300 bg-transparent py-2 text-gray-800 placeholder-transparent focus:border-blue-500 focus:outline-none"
-            required
-          />
-          <label className="absolute left-0 -top-2.5 text-gray-500 text-sm transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:-top-2.5 peer-focus:text-gray-600 peer-focus:text-sm">
-            Name
-          </label>
-        </div>
+      {/* Settings Layout */}
+      {/* Settings Layout */}
+      {/* Settings Layout */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16 
+                 grid grid-cols-1 lg:grid-cols-12 gap-10">
 
-        {/* Email Input */}
-        <div className="relative mb-6">
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder="Email"
-            className="peer w-full border-b-2 border-gray-300 bg-transparent py-2 text-gray-800 placeholder-transparent focus:border-blue-500 focus:outline-none"
-            required
-          />
-          <label className="absolute left-0 -top-2.5 text-gray-500 text-sm transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:-top-2.5 peer-focus:text-gray-600 peer-focus:text-sm">
-            Email
-          </label>
-        </div>
-        <div className="">
-          <button
-            type="submit"
-            className="w-full py-2  bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:bg-blue-700 transition-all duration-200"
-          >
-            Update Profile
-          </button>
-          <button
-            onClick={() => navigate("/password")}
-            className=" w-full py-2 mt-2 bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:bg-blue-700 transition-all duration-200"
+        {/* Sidebar */}
+        <aside className="hidden lg:block lg:col-span-3">
+          <div className="space-y-2 text-sm">
+            <p className="px-3 py-2 rounded-md 
+                    bg-indigo-100/60 text-indigo-700 font-medium">
+              Account
+            </p>
+            <button
+              onClick={() => navigate("/password")}
+              className="px-3 py-2 text-gray-600 hover:text-indigo-600 transition"
+            >
+              Security
+            </button>
+          </div>
+        </aside>
+
+        {/* Content */}
+        <section className="lg:col-span-9 space-y-8">
+
+          {/* Header */}
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-800">
+              Account
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
+              Manage your personal information and login details
+            </p>
+          </div>
+
+          {/* Card */}
+          <form
+            onSubmit={handleSubmit}
+            className="bg-[#F1F5FA] border border-gray-300/40 
+                 rounded-2xl divide-y shadow-lg"
           >
 
-            Manage Password
-          </button>
-        </div>
-      </form>
+            {/* Name */}
+            <div className="px-5 sm:px-6 py-5
+                      flex flex-col sm:flex-row
+                      sm:items-center sm:justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-gray-700">
+                  Full name
+                </p>
+                <p className="text-xs text-gray-500">
+                  This will be visible on your profile
+                </p>
+              </div>
+              <input
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                className="w-full sm:w-72 px-3 py-2 text-sm rounded-md
+                     border border-gray-300/40 bg-white
+                     focus:outline-none focus:ring-2 
+                     focus:ring-indigo-300"
+              />
+            </div>
+
+            {/* Email */}
+            <div className="px-5 sm:px-6 py-5
+                      flex flex-col sm:flex-row
+                      sm:items-center sm:justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-gray-700">
+                  Email address
+                </p>
+                <p className="text-xs text-gray-500">
+                  Used for login and notifications
+                </p>
+              </div>
+              <input
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                className="w-full sm:w-72 px-3 py-2 text-sm rounded-md
+                     border border-gray-300/40 bg-white
+                     focus:outline-none focus:ring-2 
+                     focus:ring-indigo-300"
+              />
+            </div>
+
+            {/* Actions */}
+            <div className="px-5 sm:px-6 py-4 flex justify-end">
+              <button
+                type="submit"
+                className="w-full sm:w-auto px-5 py-2.5
+                     text-sm font-medium rounded-md
+                     bg-indigo-600 text-white
+                     hover:bg-indigo-500 transition"
+              >
+                Save changes
+              </button>
+            </div>
+
+          </form>
+        </section>
+      </main>
+
+
     </div>
   );
 }

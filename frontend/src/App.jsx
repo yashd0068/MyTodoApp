@@ -14,6 +14,7 @@ import Password from "./pages/Password";
 import ChangePassword from "./pages/ChangePassword";
 import GithubCallback from "./pages/GithubCallback";
 import FacebookCallback from "./pages/FacebookCallback";
+import ForgotPassword from "./pages/ForgotPassword";
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/github-callback" element={<GithubCallback />} />
           <Route path="/facebook-callback" element={<FacebookCallback />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
         </Route>
 
@@ -60,6 +62,7 @@ function App() {
           <Route path="/edit/:id" element={<Edittodo />} />
           <Route path="/password" element={<Password />} />
           <Route path="/change-password" element={< ChangePassword />} />
+
 
 
         </Route>

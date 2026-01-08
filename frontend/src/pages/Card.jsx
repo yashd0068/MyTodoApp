@@ -5,7 +5,7 @@ export default function TodoCard({ todo, onDelete, onToggle }) {
   const navigate = useNavigate();
 
   const handleToggle = async () => {
-    const action = todo.is_completed ? "marked as pending" : "completed ";
+    const action = todo.is_completed ? "marked as pending" : "completed";
     await onToggle(todo.todo_id, !todo.is_completed);
     toast.success(`Todo ${action}`);
   };
@@ -14,55 +14,59 @@ export default function TodoCard({ todo, onDelete, onToggle }) {
     const confirmed = window.confirm("Are you sure you want to delete this todo?");
     if (!confirmed) return;
     await onDelete(todo.todo_id);
-    toast.success("Todo deleted ");
+    toast.success("Todo deleted");
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-      <h2 className="text-xl font-semibold text-gray-800 mb-2">{todo.title}</h2>
+    <div className="bg-[#1F2937] border border-white/10 rounded-2xl p-5 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
 
-      <p className="text-gray-600 mb-3">
+      {/* Title */}
+      <h2 className="text-lg font-semibold text-[#E6EAF2] mb-2 truncate">
+        {todo.title}
+      </h2>
+
+      {/* Description */}
+      <p className="text-sm text-slate-300 mb-4 line-clamp-3">
         {todo.description || "No description provided."}
       </p>
 
-      <p className="text-sm text-gray-500 mb-4">
-        <strong>Due:</strong>{" "}
-        {todo.due_date
-          ? new Date(todo.due_date).toLocaleDateString()
-          : "Not set"}
+      {/* Due date */}
+      <p className="text-xs text-slate-400 mb-4">
+        Due: {todo.due_date ? new Date(todo.due_date).toLocaleDateString() : "Not set"}
       </p>
 
-      <div className="flex justify-between items-center">
+      {/* Footer */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+
+        {/* Status */}
         <span
-          className={`px-3 py-1 rounded-full text-xs font-medium ${todo.is_completed
-            ? "bg-green-100 text-green-700"
-            : "bg-yellow-100 text-yellow-700"
+          className={`px-3 py-1 text-xs font-medium rounded-full border ${todo.is_completed
+            ? "border-emerald-400/40 text-emerald-300 bg-emerald-500/10"
+            : "border-amber-400/40 text-amber-300 bg-amber-500/10"
             }`}
         >
           {todo.is_completed ? "Completed" : "Pending"}
         </span>
 
-        <div className="flex gap-2">
+        {/* Actions */}
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={handleToggle}
-            className={`px-3 py-1 rounded text-xs font-medium transition ${todo.is_completed
-              ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-              : "bg-green-500 hover:bg-green-600 text-white"
-              }`}
+            className="px-3 py-1 text-xs rounded-full border border-indigo-400/40 text-indigo-300 hover:bg-indigo-400/20 transition"
           >
-            {todo.is_completed ? "Mark Pending" : "Mark Done"}
+            {todo.is_completed ? "Undo" : "Done"}
           </button>
 
           <button
             onClick={() => navigate(`/edit/${todo.todo_id}`)}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium transition"
+            className="px-3 py-1 text-xs rounded-full bg-indigo-500/90 hover:bg-indigo-500 text-white transition"
           >
             Edit
           </button>
 
           <button
             onClick={handleDelete}
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs font-medium transition"
+            className="px-3 py-1 text-xs rounded-full bg-red-500/80 hover:bg-red-500 text-white transition"
           >
             Delete
           </button>

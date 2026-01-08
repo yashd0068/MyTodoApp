@@ -11,7 +11,6 @@ exports.githubAuth = async (req, res) => {
             return res.status(400).json({ message: "No code provided" });
         }
 
-
         const tokenRes = await axios.post(
             "https://github.com/login/oauth/access_token",
             {
@@ -38,8 +37,7 @@ exports.githubAuth = async (req, res) => {
 
         const primaryEmail =
             emails.find(e => e.primary && e.verified)?.email || null;
-
-
+        
         let user = await User.findOne({
             where: primaryEmail ? { email: primaryEmail } : { github_id: githubUser.id }
         });

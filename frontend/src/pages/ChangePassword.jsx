@@ -69,30 +69,29 @@ export default function ChangePassword() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100">
+        <div className="min-h-screen flex flex-col bg-gray-100">
             {/* Navbar */}
-            <nav className="bg-white/30 backdrop-blur-md shadow-md fixed top-0 left-0 w-full z-20">
+            <nav className="bg-white shadow-sm fixed top-0 left-0 w-full z-20">
                 <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
                     <h1
-                        className="text-2xl font-bold text-blue-700 cursor-pointer"
+                        className="text-2xl font-bold text-blue-600 cursor-pointer"
                         onClick={() => navigate("/home")}
                     >
                         Todo<span className="text-gray-700">App</span>
                     </h1>
 
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center gap-4">
                         <Link
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition"
                             to="/home"
+                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
                         >
                             Home
                         </Link>
 
-                        {/* Profile */}
                         <div className="relative">
                             <button
                                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                                className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-lg hover:ring-2 hover:ring-blue-300 transition"
+                                className="w-9 h-9 rounded-full overflow-hidden border"
                             >
                                 <img
                                     src={
@@ -106,22 +105,30 @@ export default function ChangePassword() {
                             </button>
 
                             {dropdownOpen && (
-                                <div className="absolute right-0 mt-2 w-44 bg-white/30 backdrop-blur-md border border-white/30 rounded-xl shadow-lg py-2 flex flex-col">
+                                <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-md">
                                     <button
-                                        onClick={() => { setDropdownOpen(false); navigate("/profile"); }}
-                                        className="px-4 py-2 text-gray-700 hover:bg-blue-100/50 rounded-lg text-left transition"
+                                        onClick={() => {
+                                            setDropdownOpen(false);
+                                            navigate("/profile");
+                                        }}
+                                        className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                                     >
                                         Profile
                                     </button>
+
                                     <button
-                                        onClick={() => { setDropdownOpen(false); navigate("/password"); }}
-                                        className="px-4 py-2 text-gray-700 hover:bg-blue-100/50 rounded-lg text-left transition"
+                                        onClick={() => {
+                                            setDropdownOpen(false);
+                                            navigate("/password");
+                                        }}
+                                        className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                                     >
                                         Set Password
                                     </button>
+
                                     <button
                                         onClick={handleLogout}
-                                        className="px-4 py-2 text-gray-700 hover:bg-red-100/50 rounded-lg text-left transition"
+                                        className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                                     >
                                         Logout
                                     </button>
@@ -133,47 +140,116 @@ export default function ChangePassword() {
             </nav>
 
             {/* Change Password Form */}
-            <main className="flex-1 flex justify-center items-center px-4 py-32">
-                <form
-                    onSubmit={handleSubmit}
-                    className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-4"
-                >
-                    <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">
-                        Change Password
-                    </h2>
+            <main className="flex-1 flex items-center justify-center px-4 pt-28 pb-12">
+                <div className="w-full max-w-lg">
 
-                    <input
-                        type="password"
-                        name="currentPassword"
-                        placeholder="Current Password"
-                        required
-                        onChange={handleChange}
-                        className="w-full border-b-2 bg-transparent py-2 focus:outline-none"
-                    />
+                    {/* Card Container */}
+                    <div className="relative bg-white rounded-3xl border border-gray-200 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
 
-                    <input
-                        type="password"
-                        name="newPassword"
-                        placeholder="New Password"
-                        required
-                        onChange={handleChange}
-                        className="w-full border-b-2 bg-transparent py-2 focus:outline-none"
-                    />
+                        {/* Accent Line */}
 
-                    <input
-                        type="password"
-                        name="confirmPassword"
-                        placeholder="Confirm Password"
-                        required
-                        onChange={handleChange}
-                        className="w-full border-b-2 bg-transparent py-2 focus:outline-none"
-                    />
 
-                    <button className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700">
-                        Update Password
-                    </button>
-                </form>
+                        {/* Header */}
+                        <div className="px-10 pt-8 pb-6">
+                            <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
+                                Change password
+                            </h2>
+                            <p className="mt-2 text-sm text-gray-500 leading-relaxed max-w-sm">
+                                Protect your account by updating your password regularly.
+                            </p>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-px bg-gray-100" />
+
+                        {/* Form */}
+                        <form onSubmit={handleSubmit} className="px-10 py-8 space-y-6">
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Current password
+                                </label>
+                                <input
+                                    type="password"
+                                    name="currentPassword"
+                                    required
+                                    onChange={handleChange}
+                                    className="
+              w-full rounded-xl bg-gray-50 border border-gray-300
+              px-4 py-3 text-gray-900
+              focus:outline-none focus:ring-2 focus:ring-blue-600/40
+              focus:border-blue-600
+            "
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    New password
+                                </label>
+                                <input
+                                    type="password"
+                                    name="newPassword"
+                                    required
+                                    onChange={handleChange}
+                                    className="
+              w-full rounded-xl bg-gray-50 border border-gray-300
+              px-4 py-3 text-gray-900
+              focus:outline-none focus:ring-2 focus:ring-blue-600/40
+              focus:border-blue-600
+            "
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Confirm new password
+                                </label>
+                                <input
+                                    type="password"
+                                    name="confirmPassword"
+                                    required
+                                    onChange={handleChange}
+                                    className="
+              w-full rounded-xl bg-gray-50 border border-gray-300
+              px-4 py-3 text-gray-900
+              focus:outline-none focus:ring-2 focus:ring-blue-600/40
+              focus:border-blue-600
+            "
+                                />
+                            </div>
+
+                            {/* Footer Actions */}
+                            <div className="pt-6 flex flex-col gap-3">
+                                <button
+                                    type="submit"
+                                    className="
+              w-full bg-blue-600 text-white py-3 rounded-xl
+              font-medium text-sm tracking-wide
+              hover:bg-blue-700 transition
+              focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2
+            "
+                                >
+                                    Update password
+                                </button>
+
+                                <p className="text-xs text-gray-500 text-center">
+                                    Minimum 6 characters. Use a strong, unique password.
+                                </p>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    {/* Trust Text */}
+                    <p className="mt-6 text-center text-xs text-gray-400">
+                        Your credentials are securely stored.
+                    </p>
+
+                </div>
             </main>
+
         </div>
     );
+
 }
